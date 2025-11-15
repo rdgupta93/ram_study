@@ -1,5 +1,7 @@
 package dsa.dynamicprogramming;
 
+import org.w3c.dom.ls.LSOutput;
+
 public class DP3 {
     public static void main(String[] args) {
         /*
@@ -42,7 +44,47 @@ public class DP3 {
         }
         int ans = solve(w,v,k,dp,n-1);
         System.out.println("Ans is: "+ans);
+
+          /*
+    TC :- no of state * TC per state
+    (N*K)*O(1)
+    O(N*K)
+    SC :-O(N*K) -->  Due to dp table
+     */
+
+        // Quest 2 :- Same as above question , we can pick an element as many times
+        // as we want
+        /*
+        N=7,k(cap)=15
+        w[] = 4  1   5   4   3  7   4
+        v[] = 3  2   8   3   7  10   5
+             kpI(0-6,15)
+        not picked         picked
+       kpI(0-5,15)         kpI(0-6,15-4)+5
+
+       Generalised :
+       items : 0    1     2     3   ........i-1   i
+       weight: w0   w1    w2    w3  ........wi-1  wi
+
+                        dp(i,cap)
+                 // not picked       //picked
+                 dp(i-1,cap)         dp(i,cap-w[i])+v[i]
+         */
+
+        int w1[] = {4,1,5,4,3,7,4};
+        int v1[] ={3,2,8,3,7,10,5};
+        int cap =15;
+        int n1 = w1.length;
+        int dp1[][] = new int [n1][cap+1];
+        for(int i=0;i<n1;i++){
+            for(int j=0;j<cap+1;j++){
+                dp1[i][j]=-1;
+            }
+        }
+        int ans1 = solve1(w1,v1,n1-1,dp1,cap);
+        System.out.println("Ans2 for infinite knapsack is: "+ans1);
     }
+
 
     public static int solve(int []w,int []v,int cap,int dp[][],int i){
         if(i<0 || cap==0){
@@ -58,5 +100,20 @@ public class DP3 {
 
 
         return dp[i][cap];
+    }
+
+    public static int solve1(int w1[],int v1[],int i,int dp1[][],int cap){
+        if(i<0 || cap==0){
+            return 0;
+        }
+        if(dp1[i][cap]==-1){
+            int notTaken = solve1(w1,v1,i-1,dp1,cap);
+            dp1[i][cap]=notTaken;
+            if(cap>=w1[i]){
+                dp1[i][cap] = Math.max(notTaken,solve1(w1,v1,i,dp1,cap-w1[i])+v1[i]);
+             }
+        }
+
+        return dp1[i][cap];
     }
 }
