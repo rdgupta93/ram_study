@@ -2,6 +2,8 @@ package dsa.dynamicprogramming;
 
 import org.w3c.dom.ls.LSOutput;
 
+import java.sql.SQLOutput;
+
 public class DP3 {
     public static void main(String[] args) {
         /*
@@ -83,7 +85,71 @@ public class DP3 {
         }
         int ans1 = solve1(w1,v1,n1-1,dp1,cap);
         System.out.println("Ans2 for infinite knapsack is: "+ans1);
+
+        /*
+        Question 3:-
+        Problem Description
+        Rishik likes candies a lot. So, he went to a candy-shop to buy candies.
+        The shopkeeper showed him N packets each containg A[i] candies for cost of
+         C[i] nibbles, each candy in that packet has a sweetness B[i]
+         The shopkeeper puts the condition that Rishik can buy as many
+         complete candy-packets as he wants but he can't buy a part of the packet.
+         Rishik has D nibbles, can you tell him the maximum amount of sweetness
+         he can get from candy-packets he will buy?
+               Problem Constraints
+          1 <= N <= 700
+          1 <= A[i] <= 1000
+          1 <= B[i] <= 1000
+          1 <= C[i],D <= 1000
+
+         Input Format :-
+         First argument of input is an integer array A
+         Second argument of input is an integer array B
+         Third argument of input is an integer array C
+         Fourth argument of input is an integer D
+
+         Output Format:-
+         Return a single integer denoting maximum sweetness of the candies that he can buy
+
+         example 1:-
+         Input 1:
+          A = [1, 2, 3]
+          B = [2, 2, 10]
+          C = [2, 3, 9]
+          D = 8
+
+          Input 2:
+           A = [2]
+           B = [5]
+           C = [10]
+           D = 99
+
+           output1 :-10
+           output2 :- 90
+
+        */
+
+//        int A[] = {1, 2, 3}; // Candy
+//        int B[] = {2, 2, 10};// sweetness
+//        int C[] ={2, 3, 9};// cost
+//        int D =8;  // Capacity
+
+        int A[] = {2};
+        int B [] = {5};
+        int C[] = {10};
+        int D = 99;
+        int n2 =A.length;
+        int dp2[][] = new int[n2][D+1];
+        for(int i=0;i<n2;i++){
+            for(int j=0;j<D+1;j++){
+                dp2[i][j]=-1;
+            }
+        }
+        int ans2 = helper(A,B,C,D,dp2,n2-1);
+
+        System.out.println("Ans2 is Candy sweetness: "+ans2);
     }
+
 
 
     public static int solve(int []w,int []v,int cap,int dp[][],int i){
@@ -115,5 +181,19 @@ public class DP3 {
         }
 
         return dp1[i][cap];
+    }
+
+    private static int helper(int[] Candy, int[] Sweetness, int[] Cost, int Cap, int[][] dp2, int i) {
+        if(i<0 || Cap<0){
+            return 0;
+        }
+        if(dp2[i][Cap]==-1) {
+            int ans = helper(Candy, Sweetness, Cost, Cap, dp2, i - 1); // Skip
+            dp2[i][Cap]=ans;
+            if(Cap>=Cost[i]){                                                                // infinite knapsack
+                dp2[i][Cap] =Math.max(ans,helper(Candy, Sweetness, Cost, Cap-Cost[i], dp2, i)+Candy[i]*Sweetness[i]);
+            }
+        }
+        return dp2[i][Cap];
     }
 }
