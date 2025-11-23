@@ -152,7 +152,7 @@ public class DP3 {
 
 
 
-    public static int solve(int []w,int []v,int cap,int dp[][],int i){
+    private static int solve(int []w,int []v,int cap,int dp[][],int i){
         if(i<0 || cap==0){
             return 0;
         }
@@ -168,7 +168,7 @@ public class DP3 {
         return dp[i][cap];
     }
 
-    public static int solve1(int w1[],int v1[],int i,int dp1[][],int cap){
+    private static int solve1(int w1[],int v1[],int i,int dp1[][],int cap){
         if(i<0 || cap==0){
             return 0;
         }

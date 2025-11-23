@@ -1,0 +1,247 @@
+package dsa.dynamicprogramming;
+
+public class DP4 {
+    static int maxLength=0;
+    public static void main(String[] args) {
+        /*
+        1) Longest common subsequence
+        2) Edit distance
+        3) Regex Matching
+
+        // Other related problem
+        1. Print LCS (not just length)
+        2. LCS using only DP (Bottom-Up)
+        3. Longest Common Substring
+        4. Longest Palindromic Subsequence (LPS)
+        5. Minimum number of deletions to make string palindrome
+        6. Shortest Common Supersequence (SCS)
+        7. Edit Distance / Levenshtein Distance
+        8. Sequence pattern matching
+        9. Count number of distinct subsequences
+        10. Longest Increasing Subsequence – LIS
+        11. Longest Repeating Subsequence
+        12. Longest Common Subsequence of 3 strings
+        13. Print all possible LCS (not only one)
+        14. Smallest window in S1 which contains S2 as subsequence
+        15. Diff Utility Problem (Git ka diff command)
+         */
+
+        /*
+        Ques1) Given 2 String S1:N & S2:M
+        find the length of longest common subsequence
+        subsequence ->Order of indices || Pick any indices we want
+
+        S1 : f g d c b e a
+
+        S2 : f g e h c a
+        ans : fgca/fgea :4
+        Idea :Get LCS between S1[0-6] && S2[0-5]
+
+             LSC(S1[0-6] S2[0-5])
+                S1[0]==S2[0]
+             LCS[S1[1-6] S2[1-5])
+                S1[1]==S2[1]
+             LCS[S1[2-6] S2[2-5])
+                S1[2]!=S2[2]  // Two cases will arise
+
+        S1 : f g d c b e a            S1 : f g d c b e a
+                 *
+        S2 : f g e h c a              S2 : f g e h c a
+                                               *
+        LCS[S1[3-6] S2[2-5])         LCS[S1[2-6] S2[3-5])
+
+        Recursion Ass : Calculate LCS between S1(i,N-1) S2(j,M-1)
+
+        int LCS(char S1[],char S2[],int i,int j){
+         if(i==N || j==M){
+         return 0;         //i==N:S1 is empty
+         }
+         if(S1[i]==S2[j]){
+         return LCS(S1,S2,i+1,j+1)+1;
+         }else{
+         return Max(LCS(S1,S2,i+1,j),LCS(S1,S2,i,j+1));
+       }
+
+       USing DP :
+       dp state : dp[i][j]=LCS between S1[i..N-1] && S2[j..M-1)
+       is DP[N-1][M-1] is valid : LCS S1[N-1,N-1) && S2(M-1,M-1) - Valid
+       is DP[N][M] is valid :LCS S1[N,N-1) && S2(M,M-1)     - Invalid
+
+         */
+
+
+        char[] S1 = {'f', 'g', 'd', 'c', 'b', 'e', 'a'};
+        char[] S2 = {'f', 'g', 'e', 'h', 'c', 'a'};
+        int n = S1.length;
+        int m = S2.length;
+        int dp[][] = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                dp[i][j] = -1;
+            }
+        }
+        int ans = LCS(S1,S2,0,0,dp);
+
+        System.out.println("Length of longest common subsequence is: "+ans);
+
+        // Quest 2:- Print the string as well fgca (common subsequence)
+        String dp1[][] = new String[n][m];
+        String lcs = lcs_string(S1,S2,0,0,dp1);
+
+        System.out.println("LCS String: "+lcs);
+
+        /*
+        Question 3:-
+        Length of longest common substring
+        String s1 ="abcde"
+        String s2 ="abfde"
+        length = 2
+        Substring = ab or de
+
+         */
+        /*
+        Simple bottom-up code
+                   static int longestCommonSubstring(String s1, String s2) {
+                int n = s1.length();
+                int m = s2.length();
+                int dp[][] = new int[n+1][m+1];
+
+                int maxLen = 0;
+
+            for(int i=1; i<=n; i++){
+               for(int j=1; j<=m; j++){
+
+                 if(s1.charAt(i-1) == s2.charAt(j-1)){
+                      dp[i][j] = 1 + dp[i-1][j-1];
+                       maxLen = Math.max(maxLen, dp[i][j]);
+                 } else {
+                     dp[i][j] = 0;
+                 }
+             }
+            }
+
+            return maxLen;
+        }
+
+         */
+
+        String s1 = "abcdxy123zabc1234567swq";  //abcdxyz,geeksforgeeksco,abxy123pqrs789tuvw12345mnop,abcdxy123z,abcdxy123zabc1234567swq
+        String s2 ="xyzabcdxy123ezabc1234567swq"; // xyzabcdxye,practicewritegeekscourses,zz1239pqabc123pqrs789kk12345,xyzabcdxy123e,xyzabcdxy123ezabc1234567swq
+        int n1=s1.length();
+        int m1 =s2.length();
+        int dp2[][] = new int[n1][m1];
+      //  int ans1 =solve_lls(s1.toCharArray(),s2.toCharArray(),dp2,0,0); --DP with memoization--> Taking too much time
+        String maxLengthStr = solve_lls_bottom_up(s1,s2);
+        System.out.println("Longest common substring is: "+maxLengthStr);
+        System.out.println("Length of longest common substring: "+maxLengthStr.length());
+    }
+
+    private static int LCS(char [] s1,char [] s2,int i,int j,int dp [][]){
+        if(i==s1.length || j==s2.length){
+            return 0;
+        }
+
+        if(dp[i][j]==-1){
+            if(s1[i]==s2[j]){
+                dp[i][j]=LCS(s1,s2,i+1,j+1,dp)+1;
+            }else{
+                dp[i][j] =Math.max(LCS(s1, s2, i+1, j, dp),LCS(s1,s2,i,j+1,dp));
+            }
+        }
+        return dp[i][j];
+    }
+
+    private static String lcs_string(char [] s1,char [] s2,int i,int j,String dp1 [][]){
+        if(i== s1.length || j== s2.length){
+            return "";
+        }
+        /*
+        if(dp1[i][j] != null){
+            return dp1[i][j];
+        }
+
+        if(s1[i]==s2[j]){
+            dp1[i][j]=s1[i]+lcs_string(s1,s2,i+1,j+1,dp1);
+            return dp1[i][j];
+        }
+
+        String option1 = lcs_string(s1,s2,i+1,j,dp1);
+        String option2 =lcs_string(s1,s2,i,j+1,dp1);
+        if(option1.length()>=option2.length()){
+            dp1[i][j]=option1;
+        }else{
+            dp1[i][j]=option2;
+        }
+       return dp1[i][j];
+
+         */
+        if(dp1[i][j]==null){
+            if(s1[i]==s2[j]){
+                dp1[i][j]=s1[i]+lcs_string(s1,s2,i+1,j+1,dp1);
+            }else{
+                String option1 = lcs_string(s1,s2,i+1,j,dp1);
+                String option2 =lcs_string(s1,s2,i,j+1,dp1);
+
+                if(option1.length()>=option2.length()){
+                    dp1[i][j]=option1;
+                }else{
+                    dp1[i][j]=option2;
+                }
+            }
+        }
+        return dp1[i][j];
+    }
+
+    private static int solve_lls(char s1[],char s2[],int dp2[][],int i,int j){
+        if(i==s1.length || j== s2.length){
+            return 0;
+        }
+        if(dp2[i][j]!=0) {
+            return dp2[i][j];
+        }
+
+        int same =0;
+        if(s1[i]==s2[j]){
+            same =1+solve_lls(s1,s2,dp2,i+1,j+1);
+            dp2[i][j]=same;
+            if(same>maxLength){
+                maxLength=same;
+            }
+        }else{
+            dp2[i][j]=0;
+        }
+        solve_lls(s1,s2,dp2,i+1,j);
+        solve_lls(s1,s2,dp2,i,j+1);
+
+        return dp2[i][j];
+
+    }
+
+    private static String solve_lls_bottom_up(String s1,String s2){
+        int n =s1.length();
+        int m =s2.length();
+        int dp[][] = new int[n+1][m+1];
+        int maxLength =0;
+        int endPos=0;
+        for(int i=1;i<=n;i++){
+            for(int j =1;j<=m;j++){
+                if(s1.charAt(i-1)==s2.charAt(j-1)) {
+                    dp[i][j] = 1 + dp[i - 1][j - 1];
+                  //  maxLength =Math.max(maxLength,dp[i][j]);
+                    if(dp[i][j]>maxLength){
+                        maxLength=dp[i][j];
+                        endPos=i-1;
+                    }
+                }else{
+                   dp[i][j]=0;
+                }
+            }
+        }
+        if(maxLength==0){
+            return "";
+        }
+        return s1.substring(endPos-maxLength+1,endPos+1); // [a...b]=b-a+1=maxLength->a=b-maxLength+1;
+    }
+
+
+}
