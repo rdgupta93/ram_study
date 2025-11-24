@@ -134,6 +134,63 @@ public class DP4 {
         String maxLengthStr = solve_lls_bottom_up(s1,s2);
         System.out.println("Longest common substring is: "+maxLengthStr);
         System.out.println("Length of longest common substring: "+maxLengthStr.length());
+
+
+        /*
+        Question 4:-Longest Palindromic Subsequence (LPS)
+        Given a string s, you must find the length of the longest subsequence which is a palindrome.
+        String = "bbabcbcab"
+        Longest Palindromic Subsequence = "babcbab"
+        Length = 7
+
+        Note --> If you reverse the string and find the Longest Common
+        Subsequence between s and rev(s),
+        the common subsequence will be a palindrome.
+         */
+
+        String s4="geeksforgeeks";  //bbabcbcab,cbbd,racecar,geeksforgeeks
+        int n4= s4.length();
+        String rev =new StringBuilder(s4).reverse().toString();
+        String dp4[][] = new String[n4][n4];
+
+        /*
+        for(int i=0;i<n4;i++){
+            for(int j=0;j<n4;j++){
+                dp4[i][j]=-1;
+            }
+        }
+         */
+
+        String ans4 = long_palind_subsequence(s4,rev,n4-1,n4-1,dp4);
+        System.out.println("Longest common palindromic subsequence is: "+ans4);
+        System.out.println("Length of longest common palindromic subsequence is: "+ans4.length());
+
+        /*
+        Minimum Number of Deletions to Make a String Palindrome
+        Task :Return how many characters you must delete to make the string a palindrome.
+        - You may delete characters from anywhere (start, middle, or end).
+        -You cannot reorder characters.
+        - Only deletion is allowed, not insertion.
+
+        To make a string palindrome with minimum deletions:
+        -Keep the Longest Palindromic Subsequence (LPS)
+        -Delete the rest of the characters.
+        Minimum deletions = Length of string – Length of LPS
+
+         */
+
+        String s5 ="aebcbda";
+        int n5 =s5.length();
+        String rev5 =new StringBuilder(s5).reverse().toString();
+        int dp5[][] = new int[n5][n5];
+        for(int i=0;i<n5;i++){
+            for(int j=0;j<n5;j++){
+                dp5[i][j]=-1;
+            }
+        }
+        int lengthOfLongSubsPalind =longestPalindSubsequence(s5,rev5,n-1,n-1,dp5);
+        int minDel =n5-lengthOfLongSubsPalind;
+        System.out.println("Minimum Number of Deletions to Make a String Palindrome: "+minDel);
     }
 
     private static int LCS(char [] s1,char [] s2,int i,int j,int dp [][]){
@@ -243,5 +300,61 @@ public class DP4 {
         return s1.substring(endPos-maxLength+1,endPos+1); // [a...b]=b-a+1=maxLength->a=b-maxLength+1;
     }
 
+    /*
+    private static int long_palind_subsequence(String s4,String rev,int i,int j,int [][] dp4){
+        if(i<0 || j<0){
+            return 0;
+        }
+        if(dp4[i][j]==-1){
+            if(s4.charAt(i)==rev.charAt(j)){
+                dp4[i][j]=1+ long_palind_subsequence(s4,rev,i-1,j-1,dp4);
+            }else{
+                int option1 =long_palind_subsequence(s4,rev,i-1,j,dp4);
+                int option2 =long_palind_subsequence(s4,rev,i,j-1,dp4);
+                dp4[i][j]=Math.max(option1,option2);
+            }
+        }
+        return dp4[i][j];
+    }
+     */
+
+
+    private static String long_palind_subsequence(String s4,String rev,int i,int j,String [][] dp4){
+        if(i<0 || j<0){
+            return "";
+        }
+
+        if(dp4[i][j]==null){
+            if(s4.charAt(i)==rev.charAt(j)) {
+                dp4[i][j] = s4.charAt(i) + long_palind_subsequence(s4, rev, i - 1, j - 1, dp4);
+            }else{
+                String option1 =long_palind_subsequence(s4,rev,i-1,j,dp4);
+                String option2 = long_palind_subsequence(s4,rev,i,j-1,dp4);
+
+                if(option1.length()>option2.length()){
+                    dp4[i][j]=option1;
+                }else{
+                    dp4[i][j]=option2;
+                }
+            }
+        }
+        return dp4[i][j];
+    }
+
+    private static int longestPalindSubsequence(String s5,String rev5,int i,int j,int [][] dp5){
+        if(i<0 || j<0){
+            return 0;
+        }
+        if(dp5[i][j]==-1){
+            if(s5.charAt(i)==rev5.charAt(j)){
+                dp5[i][j]=1+ longestPalindSubsequence(s5,rev5,i-1,j-1,dp5);
+            }else{
+                int option1 =longestPalindSubsequence(s5,rev5,i-1,j,dp5);
+                int option2 =longestPalindSubsequence(s5,rev5,i,j-1,dp5);
+                dp5[i][j]=Math.max(option1,option2);
+            }
+        }
+        return dp5[i][j];
+    }
 
 }
