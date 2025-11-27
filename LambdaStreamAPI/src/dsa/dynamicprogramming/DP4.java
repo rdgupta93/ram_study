@@ -292,6 +292,63 @@ public class DP4 {
         }
         int minOps = editDistance(s7.toCharArray(),s71.toCharArray(),0,0,dp7);
         System.out.println("Min Ops required to edit distance: "+minOps);
+
+        /*
+        Question 8:-Sequence pattern matching
+        Given two strings S1 and S2, check if S1 is a subsequence of S2.
+        S1 = "abc"
+        S2 = "aebdc"
+        ans = True --> "abc" is a subsequence of "aebdc"
+
+        S1 = "abc"
+        S2 = "acb"
+        ans = false --> Order maintain nahi hua → "abc" is NOT a subsequence of "acb"
+
+        If S1 is subsequence of S2 then LCS(S1, S2) = length(S1)
+
+         */
+        String S18 = "abc";   //abc
+        String S28 = "acb";  // aebdc
+        int n8=S18.length();
+        int m8 =S28.length();
+        int dp8[][]= new int[n8][m8];
+        for(int i=0;i<n8;i++){
+            for(int j=0;j<m8;j++){
+                dp8[i][j]=-1;
+            }
+        }
+        int ans8 =LCS(S18.toCharArray(),S28.toCharArray(),0,0,dp8);
+        if(ans8==n8){
+            System.out.println("S1 is subsequence of S2");
+        }else{
+            System.out.println("S1 is not subsequence of S2");
+        }
+
+        /*
+         Question 9 :- Count number of distinct subsequences
+         Given two strings:
+         s → big string
+         t → pattern string
+         Find how many distinct subsequences of s match exactly t.
+         s = "babgbag"
+         t = "bag"
+         Output = 5
+
+         */
+
+        String s9 ="babgbag";
+        String t9 ="bag";
+        int n9 =s9.length();
+        int m9 =t9.length();
+        int dp9[][] = new int[n9+1][m9+1];
+        for(int i=0;i<=n9;i++){
+            for(int j=0;j<m9;j++){
+                dp9[i][j]=-1;
+            }
+        }
+        int ans9 =distinctSubsequence(s9,t9,0,0,dp9);
+        System.out.println("Number of distinct subsequence is: "+ans9);
+
     }
 
 
@@ -576,6 +633,35 @@ public class DP4 {
            }
        }
        return dp[i][j];
+    }
+
+    private static int distinctSubsequence(String s, String t, int i, int j, int[][] dp) {
+        int n =s.length();
+        int m =t.length();
+
+        if(j==m){  // if t is completed 1 subsequence found
+            return 1;
+        }
+        if(i==n){ // No subsequence found
+            return 0;
+        }
+
+        if(dp[i][j]!=-1){
+            return dp[i][j];
+        }
+        int ways =0;
+        // When character match --> Include + exclude
+        if(s.charAt(i)==t.charAt(j)){
+            //include
+            ways =ways+distinctSubsequence(s,t,i+1,j+1,dp);
+            // Exclude
+            ways=ways+distinctSubsequence(s,t,i+1,j,dp);
+        }else{
+            // only exclude
+               ways=ways+distinctSubsequence(s,t,i+1,j,dp);
+        }
+        dp[i][j]=ways;
+        return dp[i][j];
     }
 
 }
