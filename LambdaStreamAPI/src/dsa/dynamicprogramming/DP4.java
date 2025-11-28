@@ -349,6 +349,55 @@ public class DP4 {
         int ans9 =distinctSubsequence(s9,t9,0,0,dp9);
         System.out.println("Number of distinct subsequence is: "+ans9);
 
+        /*
+        // Revisit this Question :- DP Memoization,DP Tabulation,nlogn (Binary  search)+ print subsequence
+        Ques 10: Longest Increasing Subsequence
+        A subsequence means :- You can remove some element but order must remain same
+        Increasing means > previous selected number
+        LIS = Max length of increasing subsequence
+        arr = [10, 22, 9, 33, 21, 50, 41, 60]
+        Some increasing subsequences:
+        [10, 22, 33, 50, 60] → length = 5
+        [10, 22, 33, 41, 60] → length = 5
+        [10, 22, 33, 50] → length = 4
+        💥 Longest = 5
+        Thus LIS = 5
+
+        Intuition (Recursive thinking)
+        At every index i, you have 2 choices:
+
+        1) Include arr[i]
+        BUT only if:
+        arr[i] > previous number
+
+        2) Exclude arr[i]
+        Move ahead and don’t choose it.
+
+         LIS(i, prevIndex) = max(
+             1 + LIS(i+1, i),          // include
+              LIS(i+1, prevIndex)       // exclude
+             )
+             --> why dp of size [n][n+1] // prev index can be from -1 to n-1
+
+         */
+
+        int arr10[] = {10, 22, 9, 33, 21, 50, 41, 60};
+        int n10 =arr10.length;
+        int dp10[][] = new int[n10][n10+1];
+        for(int i =0;i<n10;i++){
+            for(int j =0;j<=n10;j++){
+                dp10[i][j]=-1;
+            }
+        }
+
+        int ans10 = longestIncreasingSubsequence(arr10,0,-1,dp10);
+        System.out.println("Length of longest increasing subsequence is : "+ans10);
+
+        int ans10I = longestIncreasingSubsequenceTabulation(arr10);
+
+        System.out.println("Length of longest increasing subsequence is(Tabulation) : "+ans10I);
+
+
     }
 
 
@@ -662,6 +711,51 @@ public class DP4 {
         }
         dp[i][j]=ways;
         return dp[i][j];
+    }
+
+    private static int longestIncreasingSubsequence(int[] arr, int i, int prev, int[][] dp) {
+        int n =arr.length;
+        // base condition
+        if(i==n){
+            return 0;
+        }
+        if(dp[i][prev+1]!=-1){
+            return dp[i][prev+1];
+        }
+
+        //not take
+        int notTake = longestIncreasingSubsequence(arr,i+1,prev,dp);
+        //take
+        int take=0;
+        if(prev==-1 || arr[i]>arr[prev]) {
+            take =1+ longestIncreasingSubsequence(arr, i + 1, i, dp);
+        }
+        dp[i][prev+1]=Math.max(take,notTake);
+        return dp[i][prev+1];
+    }
+
+    private static int longestIncreasingSubsequenceTabulation(int[] arr) {
+        int n = arr.length;
+
+        //dp[i] =LIS ending at index i
+        int dp[] = new int[n];
+
+        // Every element is LIS of length 1
+        for(int i=0;i<n;i++){
+            dp[i]=1;
+        }
+        int maxLen =1;
+        // fill the dp table
+        for(int i=0;i<n;i++){
+            for(int prev=0;prev<i;prev++){
+                // if num[i] can extends LIS ending at 'prev'
+                if(arr[i]>arr[prev]){
+                    dp[i]=Math.max(dp[i],dp[prev]+1);
+                }
+            }
+            maxLen = Math.max(maxLen,dp[i]);
+        }
+        return maxLen;
     }
 
 }
