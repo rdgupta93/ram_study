@@ -397,6 +397,91 @@ public class DP4 {
 
         System.out.println("Length of longest increasing subsequence is(Tabulation) : "+ans10I);
 
+        /*
+        Question 11:-Longest Repeating Subsequence (LRS):-
+        Find the length of the longest subsequence of a string that occurs at least twice, such
+        that the two subsequences do not have the same character positions in the original string.
+
+        example1 :- s = "aab" --> a repeating 3 times =LRS ="a",length =1
+                   ab,aa not repeated
+        Example 2:- s ="aabb"
+          ans :- ab, length =2
+        Example 3:-s = "axxxy"
+        ans = xx, length =2
+
+         */
+
+        String s11 ="aabb";//axxxy,
+        int n11 = s11.length();
+        int dp11[][] = new int[n11][n11];
+        for(int i=0;i<n11;i++){
+            for(int j=0;j<n11;j++){
+                dp11[i][j]=-1;
+            }
+        }
+        int ans11 = longestRepeatingSequence(s11,n11-1,n11-1,dp11);
+        System.out.println("Length of longest repeating sequence is: "+ans11);
+        /*
+        Tabulation code :-
+        class Solution {
+           public int LongestRepeatingSubsequence(String s) {
+           int n = s.length();
+            int[][] dp = new int[n + 1][n + 1];
+
+               for (int i = 1; i <= n; i++) {
+                  for (int j = 1; j <= n; j++) {
+
+                   if (s.charAt(i - 1) == s.charAt(j - 1) && i != j) {
+                      dp[i][j] = 1 + dp[i - 1][j - 1];
+                     } else {
+                         dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                        }
+                    }
+                  }
+
+               return dp[n][n];
+             }
+          }
+
+         */
+
+        /*
+        Question 12:-Longest Common Subsequence of 3 Strings
+          A = "abcd1e2"
+          B = "bc12ea"
+          C = "bd1ea"
+         length =3 , b1e
+
+         1️⃣ Characters match in all three
+         if A[i-1] == B[j-1] == C[k-1]:
+          dp[i][j][k] = 1 + dp[i-1][j-1][k-1]
+
+        2️⃣ No match → explore 3 possibilities
+        dp[i][j][k] =
+               max(
+                  dp[i-1][j][k],
+                  dp[i][j-1][k],
+                  dp[i][j][k-1]
+                  )
+
+
+         */
+
+        String s12I="abcd1e2";
+        String s12II="bc12ea";
+        String s12III="bd1ea";
+        int n12I =s12I.length(),n12II=s12II.length(),n12III=s12III.length();
+        int dp12[][][]=new int[n12I+1][n12II+1][n12III+1];
+        for(int i=0;i<=n12I;i++){
+            for(int j=0;j<=n12II;j++){
+                for(int k=0;k<=n12III;k++){
+                    dp12[i][j][k]=-1;
+                }
+            }
+        }
+
+        int ans12 = lengthOfLongestCommonSubSequenceOf3String(s12I,s12II,s12III,n12I,n12II,n12III,dp12);
+        System.out.println("Length of longest common subsequence of 3 strings is: "+ans12);
 
     }
 
@@ -756,6 +841,160 @@ public class DP4 {
             maxLen = Math.max(maxLen,dp[i]);
         }
         return maxLen;
+    }
+
+    private static int longestRepeatingSequence(String s11, int i, int j, int[][] dp) {
+        int n = s11.length();
+        if(i<0 || j<0){
+            return 0;
+        }
+        if(dp[i][j]!=-1){
+            return dp[i][j];
+        }
+        if(s11.charAt(i)==s11.charAt(j) && i!=j){
+            dp[i][j] = 1+longestRepeatingSequence(s11,i-1,j-1,dp);
+        }else{
+            dp[i][j]=Math.max(longestRepeatingSequence(s11,i-1,j,dp),longestRepeatingSequence(s11,i,j-1,dp));
+        }
+
+        return dp[i][j];
+
+        /*
+        solve("aab", 2, 2, dp)
+      🧠 Let’s Dry Run Step-by-Step
+      🎯 Start:
+     ini
+      Copy code
+    i = 2, j = 2 → (char = 'b' , 'b')
+      ✔ Characters match
+    ❌ But i == j (same index → not allowed)
+
+     So we go to ELSE case:
+
+      lua
+         Copy code
+         dp[2][2] = max(solve(1,2), solve(2,1))
+     ➤ Move 1: solve(1,2)
+       i = 1 → 'a'
+     j = 2 → 'b'
+
+      'a' != 'b'
+
+
+     dp[1][2] = max(solve(0,2), solve(1,1))
+     ➤ solve(0,2)
+      i = 0 → 'a'
+     j = 2 → 'b'
+
+       Again mismatch → else:
+
+     dp[0][2] = max(solve(-1,2), solve(0,1))
+      solve(-1,2) → 0 (base case)
+       Now evaluate:
+
+       ➤ solve(0,1)
+     i = 0 → 'a'
+     j = 1 → 'a'
+
+       ✔ Characters match ('a' == 'a')
+     ✔ i != j → allowed
+
+       So:
+     dp[0][1] = 1 + solve(-1,0) = 1 + 0 = 1
+     Thus:
+
+       dp[0][2] = max(0, 1) = 1
+      ➤ Now solve(1,1)
+      i = 1 → 'a'
+     j = 1 → 'a'
+
+      ✔ Match
+       ❌ But i == j so match NOT allowed
+
+     dp[1][1] = max(solve(0,1), solve(1,0))
+      We already know:
+
+      solve(0,1) = 1 (calculated above)
+
+      Now compute:
+
+      ➤ solve(1,0)
+     i = 1 → 'a'
+      j = 0 → 'a'
+
+     ✔ Match
+      ✔ i != j allowed
+
+       dp[1][0] = 1 + solve(0,-1) = 1
+     Thus:
+
+        dp[1][1] = max(1,1) = 1
+     Now we have:
+
+      dp[1][2] = max(dp[0][2], dp[1][1])
+         = max(1, 1)
+         = 1
+      ➤ Move 2: solve(2,1)
+       i = 2 → 'b'
+      j = 1 → 'a'
+
+      Mismatch:
+
+      dp[2][1] = max(solve(1,1), solve(2,0))
+     We know:
+
+       solve(1,1) = 1
+
+       Now evaluate solve(2,0):
+
+        i = 2 → 'b'
+       j = 0 → 'a'
+
+       Mismatch:
+       dp[2][0] = max(solve(1,0), solve(2,-1))
+       We know solve(1,0) = 1
+        solve(2,-1) = 0
+
+      So:
+
+       dp[2][0] = 1
+       Thus:
+       dp[2][1] = max(1,1) = 1
+        🎯 Final step:
+
+      dp[2][2] = max(dp[1][2], dp[2][1])
+         = max(1, 1)
+         = 1
+      🚀 Final Answer
+       Longest Repeating Subsequence length = 1
+       (subsequence = "a")
+
+
+         */
+    }
+
+
+    private static int lengthOfLongestCommonSubSequenceOf3String(String s1, String s2, String s3, int i, int j, int k, int[][][] dp) {
+        if(i==0 || j==0 || k==0){
+            return 0;
+        }
+
+        if(dp[i][j][k]!=-1){
+            return dp[i][j][k];
+        }
+
+        if(s1.charAt(i-1)==s2.charAt(j-1) && s2.charAt(j-1)==s3.charAt(k-1)){
+            dp[i][j][k]=1+lengthOfLongestCommonSubSequenceOf3String(s1,s2,s3,i-1,j-1,k-1,dp);
+        }else{
+            dp[i][j][k] =Math.max(
+                    lengthOfLongestCommonSubSequenceOf3String(s1,s2,s3,i-1,j,k,dp),
+                    Math.max(
+                            lengthOfLongestCommonSubSequenceOf3String(s1,s2,s3,i,j-1,k,dp),
+                            lengthOfLongestCommonSubSequenceOf3String(s1,s2,s3,i,j,k-1,dp)
+                    )
+            );
+        }
+        return dp[i][j][k];
     }
 
 }
