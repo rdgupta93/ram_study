@@ -1,5 +1,8 @@
 package dsa.dynamicprogramming;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class DP4 {
     static int maxLength=0;
     public static void main(String[] args) {
@@ -22,8 +25,10 @@ public class DP4 {
         11. Longest Repeating Subsequence
         12. Longest Common Subsequence of 3 strings
         13. Print all possible LCS (not only one)
-        14. Smallest window in S1 which contains S2 as subsequence
-        15. Diff Utility Problem (Git ka diff command)
+        14. Regex matching
+           Given text t and pattern p check both are same or not?
+       // 14. Smallest window in S1 which contains S2 as subsequence
+
          */
 
         /*
@@ -482,6 +487,77 @@ public class DP4 {
 
         int ans12 = lengthOfLongestCommonSubSequenceOf3String(s12I,s12II,s12III,n12I,n12II,n12III,dp12);
         System.out.println("Length of longest common subsequence of 3 strings is: "+ans12);
+
+        /*
+        Question 13 :-Print all possible LCS (not only one)
+        String s1 = "abcabcaa"
+        String s2 = "acbacba"
+        Multiple LCS :
+        "abcba"
+        "acbca"
+        "abcaa"
+
+         */
+        String s13I ="abcabcaa";
+        String s13II ="acbacba";
+        int n13I = s13I.length();
+        int m13I =s13II.length();
+        int dp13 [][] = new int[n13I+1][m13I+1];
+
+        // build dp
+        for(int i=1;i<=n13I;i++){
+            for(int j=1;j<=m13I;j++){
+                if(s13I.charAt(i-1)==s13II.charAt(j-1)){
+                    dp13[i][j]=1+dp13[i-1][j-1];
+                }else {
+                    dp13[i][j] =Math.max(dp13[i-1][j],dp13[i][j-1]);
+                }
+            }
+        }
+
+        // Print all lcs
+        Set<String>result =findAllLCS(s13I,s13II,n13I,m13I,dp13);
+        System.out.println("Print all lcs: ");
+        for(String str:result){
+            System.out.println(str);
+        }
+
+
+        /*
+        Question 14:-
+        Regex matching
+        Given text t and pattern p check both are same or not
+        T -> In text it contains alphabet
+        P->with alphabet ,it contains ?,*
+        ?-> it can match any 1 character
+        *->it can match any number of continuous characters,{0,1,2,3..}
+
+        ex1 : T: a p p l e
+              P: a ? * e      matched ? ->P  and *->p l
+        ex2:  T: a p p l a e
+              P: a * a ?       not matched  x -> matched ppl and e not matched
+        ex3:  T: a n t
+              P: a ? * * t   matched
+        ex4: T:""
+             P: * * * *      matched
+        ex5: T:""
+             P:""             matched
+        ex6: T: c d b
+             P: a *         not matched
+
+
+                             T: e l p p a
+                             P: e ? * a
+
+                             Reg(T[0-4] P[0-3])
+                                T[0]==P[0]
+                              Reg(T[1-4] P[1-3])
+                                 P[1]==?
+                                 Reg(T[2-4] P[2-3])
+                                P[2] ==*
+             caseI- not matching leave it           match it and stay there
+             Reg(T[2-4] P[3-3])                       Reg(T[3-4] P[2-3])
+         */
 
     }
 
@@ -995,6 +1071,33 @@ public class DP4 {
             );
         }
         return dp[i][j][k];
+    }
+
+
+    private static Set<String> findAllLCS(String s1, String s2, int i, int j, int[][] dp) {
+
+        Set<String>set = new HashSet<>();
+
+        if(i==0 || j==0){
+            set.add("");
+            return set;
+        }
+
+        // if char matched
+        if(s1.charAt(i-1)==s2.charAt(j-1)){
+            Set<String>temp = findAllLCS(s1,s2,i-1,j-1,dp);
+            for(String str :temp){
+                set.add(str+s1.charAt(i-1));
+            }
+        }else{
+            if(dp[i-1][j]>=dp[i][j-1]){
+                set.addAll(findAllLCS(s1,s2,i-1,j,dp));
+            }
+            if(dp[i][j-1]>=dp[i-1][j]){
+                set.addAll(findAllLCS(s1,s2,i,j-1,dp));
+            }
+        }
+        return set;
     }
 
 }

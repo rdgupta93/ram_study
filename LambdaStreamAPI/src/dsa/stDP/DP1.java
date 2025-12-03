@@ -1,4 +1,4 @@
-package dsa.striverdp;
+package dsa.stDP;
 
 import java.util.Arrays;
 
