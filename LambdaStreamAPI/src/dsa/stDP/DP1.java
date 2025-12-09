@@ -65,7 +65,7 @@ public class DP1 {
 
     // Memoization
 
-    public static int fib(int n,int dp []){
+    private static int fib(int n,int dp []){
 
         if(n<=1){
             return n;

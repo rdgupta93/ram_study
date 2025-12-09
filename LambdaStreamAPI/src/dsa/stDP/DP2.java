@@ -12,7 +12,7 @@ public class DP2 {
         System.out.println("no of ways climbs the stairs "+ stair(n,dp));
     }
 
-    public static int stair(int n, int dp[]){
+    private static int stair(int n, int dp[]){
         if(n==0){
             return 1;
         }
