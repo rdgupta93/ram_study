@@ -18,6 +18,30 @@ public class DP12 {
         Boolean dp[][] = new Boolean[n][sum+1];
         Boolean ans = solve(n-1,sum,arr,dp);
         System.out.println("Ans is: "+ans);
+
+        System.out.println("Using Tabulation");
+        boolean dp1[][] = new boolean[n][sum+1];
+        // Write the same base case as we write in dp memo if target==0
+        for(int i=0;i<n;i++){
+            dp1[i][0]=true;
+        }
+        // if(ind==0)return arr[0]==target;
+        if(arr[0]<=sum) {
+            dp1[0][arr[0]] = true;
+        }
+
+        for(int ind =1;ind<n;ind++){
+            for( int target =1;target<=sum;target++){
+                boolean notTake = dp1[ind-1][target];
+                boolean take = false;
+                if(target>=arr[ind]){
+                    take = dp1[ind-1][target-arr[ind]];
+                }
+                dp1[ind][target] = take|| notTake;
+            }
+        }
+        boolean ans1 =dp1[n-1][sum];
+        System.out.println("Ans is Using Tabulation :"+ans1);
     }
 
     private static Boolean solve(int ind,int target, int arr[],Boolean[][] dp){
