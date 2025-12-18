@@ -3,6 +3,7 @@ package dsa.stDP;
 public class DP14 {
     public static void main(String[] args) {
         /*
+        // Given an array arr[]  containing non-negative integers
         2035. Partition Array Into Two Arrays to Minimize Sum Difference
         You are given an integer array nums of 2 * n integers. You need to partition
         nums into two arrays of length n to minimize the absolute difference of the
@@ -15,14 +16,12 @@ public class DP14 {
          Explanation: One optimal partition is: [3,9] and [7,3].
         The absolute difference between the sums of the arrays is abs((3 + 9) - (7 + 3)) = 2.
 
-        Input: nums = [-36,36]
-        Output: 72
          */
-        int nums[] = {3,9,7,3};
+        int nums[] = {1,6,5,11}; // {1 6 5 11},{3,9,7,3}
         int n = nums.length;
         int sum =0;
         for(int i =0;i<n;i++){
-            sum +=nums[0];
+            sum +=nums[i];
         }
         System.out.println("Sum: "+sum);
         boolean dp[][] = new boolean[n][sum+1];
