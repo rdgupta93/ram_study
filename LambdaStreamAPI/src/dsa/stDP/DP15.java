@@ -27,6 +27,37 @@ public class DP15 {
 
         int ans = solve(n-1,nums,target,dp);
         System.out.println("Ans is : "+ans);
+
+        System.out.println("Using Tabulation solutions");
+        int dp1[][] = new int [n][target+1];
+//        for(int i=0;i<n;i++){  // edge cases is important here
+//            dp1[i][0]=1;
+//        }
+//        if(nums[0]<=target){
+//            dp1[0][nums[0]] =1;
+//        }
+        // base initialization
+        if (nums[0] == 0) {
+            dp1[0][0] = 2;   // {} , {0}
+        } else {
+            dp1[0][0] = 1;   // {}
+        }
+
+        if (nums[0] != 0 && nums[0] <= target) {
+            dp1[0][nums[0]] = 1;
+        }
+
+        for(int i=1;i<n;i++){
+            for(int j=0;j<=target;j++){
+                int notTake =dp1[i-1][j];
+                int take =0;
+                if(nums[i]<=j) take = dp1[i-1][j-nums[i]];
+
+                dp1[i][j]=notTake+take;
+            }
+        }
+
+        System.out.println("Ans using tabulation is: "+dp1[n-1][target]);
     }
 
     public static int solve(int ind,int []nums,int target,int [][]dp){
