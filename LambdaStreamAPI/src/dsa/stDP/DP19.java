@@ -2,24 +2,28 @@ package dsa.stDP;
 
 import java.util.Arrays;
 
-public class DP16 {
+public class DP19 {
     public static void main(String[] args) {
         /*
-        Partitions with Given Difference
-        Given an array arr[] and an integer diff, count the number of ways to partition the array into two
-        subsets such that the difference between their sums is equal to diff.
-
-        Note: A partition in the array means dividing an array into two subsets say S1 and S2 such that
-        the union of S1 and S2 is equal to the original array and each element is present in only one of
-        the subsets.
-
-        Input: arr[] = [5, 2, 6, 4], diff = 3
-        Output: 1
-        Explanation: There is only one possible partition of this array. Partition : [6, 4], [5,2]
-        The subset difference between subset sum is: (6 + 4) - (5 + 2) = 3.
+        494. Target Sum
+        You are given an integer array nums and an integer target.
+        You want to build an expression out of nums by adding one of the symbols '+' and '-'
+        before each integer in nums and then concatenate all the integers.
+        For example, if nums = [2, 1], you can add a '+' before 2 and a '-' before 1 and
+        concatenate them to build the expression "+2-1".
+        Return the number of different expressions that you can build, which evaluates to target.
+        Input: nums = [1,1,1,1,1], target = 3
+        Output: 5
+        Explanation: There are 5 ways to assign symbols to make the sum of nums be target 3.
+        -1 + 1 + 1 + 1 + 1 = 3
+        +1 - 1 + 1 + 1 + 1 = 3
+        +1 + 1 - 1 + 1 + 1 = 3
+        +1 + 1 + 1 - 1 + 1 = 3
+        +1 + 1 + 1 + 1 - 1 = 3
          */
 
-        int arr[] = {1,1,1,1,1}; //{1, 1, 1, 1},0 ,{5, 2, 6, 4},3, {3, 2, 7, 1},4 , {1,1,1,1,1},3
+        int arr[] = {1,1,1,1,1};
+
         int diff = 3;
         int n= arr.length;
         int sum =0;
@@ -62,5 +66,6 @@ public class DP16 {
         }
         return dp[ind][target]=notPick + pick;
     }
+
 
 }
